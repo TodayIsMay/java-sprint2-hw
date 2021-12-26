@@ -5,17 +5,14 @@ import tasks.Subtask;
 import tasks.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Manager {
-    ArrayList<Task> tasks;
-    ArrayList<Epic> epics;
-    HashMap<Epic, ArrayList<Subtask>> map;
+    private ArrayList<Task> tasks;
+    private ArrayList<Epic> epics;
 
     public Manager() {
         tasks = new ArrayList<>();
         epics = new ArrayList<>();
-        map = new HashMap<>();
     }
 
     public ArrayList<Task> getTasks() {
@@ -32,7 +29,7 @@ public class Manager {
 
     public void addSubtask(Subtask subtask) {
         for (Epic epic : epics) {
-            if (epic.getName().equals(subtask.getBelonging())) {
+            if (epic.getID() == subtask.getBelonging()) {
                 epic.addSub(subtask);
             }
         }

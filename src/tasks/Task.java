@@ -1,9 +1,9 @@
 package tasks;
 
 public class Task {
-    String name;
-    int ID;
-    String status;
+    private String name;
+    private int ID;
+    private String status;
 
     public Task(String name, int ID, String status) {
         this.name = name;

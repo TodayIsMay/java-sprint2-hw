@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class Updater {
     Scanner newScan = new Scanner(System.in);
-    ArrayList<Task> tasks;
-    ArrayList<Epic> epics;
+    private ArrayList<Task> tasks;
+    private ArrayList<Epic> epics;
 
     public Updater(ArrayList<Epic> epics, ArrayList<Task> tasks) {
         this.epics = epics;

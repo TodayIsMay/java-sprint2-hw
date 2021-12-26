@@ -1,12 +1,10 @@
 package tasks;
 
-import main.Manager;
-
 import java.util.ArrayList;
 
 public class Epic extends Task {
     private String epicDescription;
-    ArrayList<Subtask> subtasks;
+    private ArrayList<Subtask> subtasks;
 
     public Epic(String name, String epicDescription, int ID, String status) {
         super(name, ID, status);
@@ -42,7 +40,7 @@ public class Epic extends Task {
             status = "NEW";
         }
         for (Subtask subtask : subtasks) {
-            if (subtask.getStatus().equals("DONE") | subtask.getStatus().equals("IN_PROGRESS")) {
+            if (subtask.getStatus().equals("DONE") || subtask.getStatus().equals("IN_PROGRESS")) {
                 tracking.add(subtask);
             }
         }
