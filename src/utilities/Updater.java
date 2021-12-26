@@ -1,26 +1,25 @@
-package Utilities;
+package utilities;
 
-import Tasks.Epic;
-import Tasks.Subtask;
-import Tasks.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class Updater {
     Scanner newScan = new Scanner(System.in);
-    HashMap<Epic, ArrayList<Subtask>> map;
     ArrayList<Task> tasks;
+    ArrayList<Epic> epics;
 
-    public Updater(HashMap<Epic, ArrayList<Subtask>> map, ArrayList<Task> tasks) {
-        this.map = map;
+    public Updater(ArrayList<Epic> epics, ArrayList<Task> tasks) {
+        this.epics = epics;
         this.tasks = tasks;
     }
 
     public void updateSubtaskStatus(int ID) {
-        for (ArrayList<Subtask> subtask : map.values()) {
-            for (Subtask sub : subtask) {
+        for (Epic epic : epics) {
+            for (Subtask sub : epic.getSubtasks()) {
                 if (sub.getID() == ID) {
                     System.out.println("Выберите новый статус: " + "\n" + "1 - NEW"
                             + "\n" + "2 - IN_PROGRESS" + "\n" + "3 - DONE");

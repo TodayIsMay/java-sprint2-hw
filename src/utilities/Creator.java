@@ -1,16 +1,15 @@
-package Utilities;
+package utilities;
 
-import Tasks.Epic;
-import Tasks.Subtask;
-import Tasks.Task;
+import tasks.Epic;
+import tasks.Subtask;
+import tasks.Task;
 
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Random;
 
 public class Creator {
-    ArrayList<Integer> listOfIDs = new ArrayList<>();
-    ArrayList<Epic> epics = new ArrayList<>();
+    private ArrayList<Integer> listOfIDs = new ArrayList<>();
     Scanner scanner = new Scanner(System.in);
 
     public Epic createEpic() {
@@ -20,16 +19,17 @@ public class Creator {
         String description = scanner.nextLine();
         int epicID = randomize(0, Integer.MAX_VALUE);
         String status = "NEW";
-        epics.add(new Epic(name, description, epicID, status));
         return new Epic(name, description, epicID, status);
     }
 
     public Subtask createSubtask() {
+        System.out.println("К какому эпику относится подзадача?");
+        String belonging = scanner.nextLine();
         System.out.println("Введите название подзадачи");
         String name = scanner.nextLine();
         int ID = randomize(0, Integer.MAX_VALUE);
         String status = "NEW";
-        return new Subtask(name, ID, status);
+        return new Subtask(belonging, name, ID, status);
     }
 
     public Task createTask() {
