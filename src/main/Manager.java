@@ -47,34 +47,46 @@ public class Manager {
         return list;
     }
 
-    public ArrayList<Subtask> showSubtasksFromEpic(String name) {
+    public ArrayList<Subtask> showSubtasksFromEpic(int ID) {
         ArrayList<Subtask> subtasks = new ArrayList<>();
         for (Epic epic : epics) {
-            if (epic.getName().equals(name)) {
+            if (epic.getID() == ID) {
                 subtasks = epic.getSubtasks();
             }
         }
         return subtasks;
     }
 
-    public void showAnyTaskByID(int ID) {
+    public Epic getEpicByID(int ID) {
+        Epic target = null;
         for (Epic epic : epics) {
             if (epic.getID() == ID) {
-                System.out.println(epic.getName());
-            } else {
-                ArrayList<Subtask> list = epic.getSubtasks();
-                for (Subtask subtask : list) {
-                    if (subtask.getID() == ID) {
-                        System.out.println(subtask.getName());
-                    }
-                }
+                target = epic;
             }
         }
+        return target;
+    }
+
+    public Subtask getSubtaskByID(int ID) {
+        Subtask target = null;
+        for (Epic epic : epics) {
+            ArrayList<Subtask> list = epic.getSubtasks();
+            for (Subtask subtask : list) {
+                if (subtask.getID() == ID) ;
+                target = subtask;
+            }
+        }
+        return target;
+    }
+
+    public Task getTaskByID(int ID) {
+        Task target = null;
         for (Task task : tasks) {
             if (task.getID() == ID) {
-                System.out.println(task.getName());
+                target = task;
             }
         }
+        return target;
     }
 
     public void delete(int ID, int command) {

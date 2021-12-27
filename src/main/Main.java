@@ -15,6 +15,7 @@ public class Main {
         Updater updater = new Updater(manager.getEpics(), manager.getTasks());
         Creator creator = new Creator();
         Scanner scanner = new Scanner(System.in);
+        Scanner scanner1 = new Scanner(System.in);
 
         loop:
         while (true) {
@@ -72,24 +73,36 @@ public class Main {
                     System.out.println("___________________________");
                     break;
                 case 5:
-                    Scanner scanner1 = new Scanner(System.in);
-                    System.out.println("Введите название:");
-                    String name = scanner1.nextLine();
-                    System.out.println("Получить все подзадачи эпика " + name + ".");
+                    System.out.println("Введите ID эпика:");
+                    int epicID = scanner1.nextInt();
+                    System.out.println("Получить все подзадачи эпика " + epicID + ".");
                     System.out.println("__________________________________________");
-                    for (Subtask subtask : manager.showSubtasksFromEpic(name)) {
+                    for (Subtask subtask : manager.showSubtasksFromEpic(epicID)) {
                         System.out.println(subtask.getName());
                     }
                     System.out.println("__________________________________");
 
                     break;
                 case 6:
-                    System.out.println("Введите ID:");
-                    int result = scanner.nextInt();
-                    System.out.println("Получение задачи по ID.");
-                    System.out.println("__________________________________");
-                    manager.showAnyTaskByID(result);
-                    System.out.println("__________________________________");
+                    System.out.println("Какую задачу надо найти?");
+                    System.out.println("1 - эпик");
+                    System.out.println("2 - подзадачу");
+                    System.out.println("3 - простую задачу");
+                    int taskType = scanner1.nextInt();
+                    int result;
+                    if (taskType == 1) {
+                        System.out.println("Введите ID эпика:");
+                        result = scanner.nextInt();
+                        System.out.println(manager.getEpicByID(result).getName());
+                    } else if (taskType == 2) {
+                        System.out.println("Введите ID подзадачи");
+                        result = scanner.nextInt();
+                        System.out.println(manager.getSubtaskByID(result).getName());
+                    } else if (taskType == 3) {
+                        System.out.println("Введите ID простой задачи.");
+                        result = scanner.nextInt();
+                        System.out.println(manager.getTaskByID(result).getName());
+                    }
                     break;
                 case 7:
                     System.out.println("Выберите один из вариантов ниже: ");
