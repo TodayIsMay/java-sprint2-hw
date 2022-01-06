@@ -3,9 +3,9 @@ package tasks;
 public class Task {
     private String name;
     private int ID;
-    private String status;
+    private Status status;
 
-    public Task(String name, int ID, String status) {
+    public Task(String name, int ID, Status status) {
         this.name = name;
         this.ID = ID;
         this.status = status;
@@ -27,11 +27,11 @@ public class Task {
         this.ID = ID;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 }

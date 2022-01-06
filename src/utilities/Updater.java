@@ -1,6 +1,7 @@
 package utilities;
 
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -26,13 +27,13 @@ public class Updater {
                     int variant = newScan.nextInt();
                     switch (variant) {
                         case 1:
-                            sub.setStatus("NEW");
+                            sub.setStatus(Status.NEW);
                             break;
                         case 2:
-                            sub.setStatus("IN_PROGRESS");
+                            sub.setStatus(Status.IN_PROGRESS);
                             break;
                         case 3:
-                            sub.setStatus("DONE");
+                            sub.setStatus(Status.DONE);
                             break;
                     }
                 }
@@ -48,13 +49,13 @@ public class Updater {
                 int variant = newScan.nextInt();
                 switch (variant) {
                     case 1:
-                        task.setStatus("NEW");
+                        task.setStatus(Status.NEW);
                         break;
                     case 2:
-                        task.setStatus("IN_PROGRESS");
+                        task.setStatus(Status.IN_PROGRESS);
                         break;
                     case 3:
-                        task.setStatus("DONE");
+                        task.setStatus(Status.DONE);
                         break;
                 }
             }

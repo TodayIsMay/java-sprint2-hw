@@ -4,6 +4,7 @@ import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
 import utilities.Creator;
+import utilities.Managers;
 import utilities.Updater;
 
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Manager manager = new Manager();
+        //Managers managers = new Managers();
+        TaskManager manager = Managers.getDefault();
         Updater updater = new Updater(manager.getEpics(), manager.getTasks());
         Creator creator = new Creator();
         Scanner scanner = new Scanner(System.in);
@@ -147,7 +149,11 @@ public class Main {
                         System.out.println("Такой команды нет.");
                     }
                     break;
-
+                case 9:
+                    for (Task task : manager.history()) {
+                        System.out.println(task.getName());
+                    }
+                    break;
                 case 0:
                     break loop;
             }
@@ -164,6 +170,7 @@ public class Main {
         System.out.println("6 - получить задачу по ID.");
         System.out.println("7 - обновить задачу по ID");
         System.out.println("8 - удалить задачи");
+        System.out.println("9 - история просмотров");
         System.out.println("0 - выход из программы.");
     }
 }

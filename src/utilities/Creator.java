@@ -1,6 +1,7 @@
 package utilities;
 
 import tasks.Epic;
+import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
@@ -18,7 +19,7 @@ public class Creator {
         System.out.println("Введите описание");
         String description = scanner.nextLine();
         int epicID = generateID();
-        String status = "NEW";
+        Status status = Status.NEW;
         return new Epic(name, description, epicID, status);
     }
 
@@ -28,7 +29,7 @@ public class Creator {
         System.out.println("Введите название подзадачи");
         String name = scanner.nextLine();
         int ID = generateID();
-        String status = "NEW";
+        Status status = Status.NEW;
         return new Subtask(belonging, name, ID, status);
     }
 
@@ -36,14 +37,14 @@ public class Creator {
         System.out.println("Введите название задачи.");
         String name = scanner.nextLine();
         int ID = generateID();
-        String status = "NEW";
+        Status status = Status.NEW;
         return new Task(name, ID, status);
     }
 
     public int generateID() {
         int result = 1;
-        for (Integer number: list) {
-            if(number == result) {
+        for (Integer number : list) {
+            if (number == result) {
                 result++;
             }
         }

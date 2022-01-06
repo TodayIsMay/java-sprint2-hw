@@ -6,7 +6,7 @@ public class Epic extends Task {
     private String epicDescription;
     private ArrayList<Subtask> subtasks;
 
-    public Epic(String name, String epicDescription, int ID, String status) {
+    public Epic(String name, String epicDescription, int ID, Status status) {
         super(name, ID, status);
         this.epicDescription = epicDescription;
         this.subtasks = new ArrayList<>();
@@ -32,30 +32,30 @@ public class Epic extends Task {
         subtasks.add(sub);
     }
 
-    public String getStatus(ArrayList<Epic> epics, ArrayList<Subtask> subtasks) {
-        String status = "";
+    public Status getStatus(ArrayList<Epic> epics, ArrayList<Subtask> subtasks) {
+        Status status;
         ArrayList<Subtask> tracking = new ArrayList<>();
         ArrayList<Subtask> tracking1 = new ArrayList<>();
         if (epics.isEmpty()) {
-            status = "NEW";
+            status = Status.NEW;
         }
         for (Subtask subtask : subtasks) {
-            if (subtask.getStatus().equals("DONE") || subtask.getStatus().equals("IN_PROGRESS")) {
+            if (subtask.getStatus().equals(Status.DONE) || subtask.getStatus().equals(Status.IN_PROGRESS)) {
                 tracking.add(subtask);
             }
         }
         if (tracking.size() == 0) {
-            status = "NEW";
+            status = Status.NEW;
         } else {
             for (Subtask subtask : tracking) {
-                if (subtask.getStatus().equals("DONE")) {
+                if (subtask.getStatus().equals(Status.DONE)) {
                     tracking1.add(subtask);
                 }
             }
             if (tracking1.size() == subtasks.size()) {
-                status = "DONE";
+                status = Status.DONE;
             } else {
-                status = "IN_PROGRESS";
+                status = Status.IN_PROGRESS;
             }
         }
         tracking1.clear();
