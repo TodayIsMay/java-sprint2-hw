@@ -2,12 +2,12 @@ package tasks;
 
 public class Task {
     private String name;
-    private int ID;
+    private int Id;
     private Status status;
 
-    public Task(String name, int ID, Status status) {
+    public Task(String name, int Id, Status status) {
         this.name = name;
-        this.ID = ID;
+        this.Id = Id;
         this.status = status;
     }
 
@@ -19,12 +19,12 @@ public class Task {
         this.name = name;
     }
 
-    public int getID() {
-        return ID;
+    public int getId() {
+        return Id;
     }
 
-    public void setID(int ID) {
-        this.ID = ID;
+    public void setId(int ID) {
+        this.Id = Id;
     }
 
     public Status getStatus() {

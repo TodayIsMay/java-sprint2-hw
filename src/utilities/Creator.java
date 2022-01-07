@@ -10,8 +10,7 @@ import java.util.Scanner;
 
 public class Creator {
     private ArrayList<Integer> list = new ArrayList<>();
-    Scanner scanner = new Scanner(System.in);
-    Scanner intScanner = new Scanner(System.in);
+    private Scanner scanner = new Scanner(System.in);
 
     public Epic createEpic() {
         System.out.println("Введите название эпика");
@@ -25,9 +24,9 @@ public class Creator {
 
     public Subtask createSubtask() {
         System.out.println("К какому эпику относится подзадача(ID)?");
-        int belonging = intScanner.nextInt();
-        System.out.println("Введите название подзадачи");
-        String name = scanner.nextLine();
+        int belonging = Integer.parseInt(scanner.nextLine());//либо я туплю, либо только так можно добиться того, чтобы
+        System.out.println("Введите название подзадачи");    //Сканнер ждал ввода и не летел дальше, не используя при
+        String name = scanner.nextLine();                    //этом два разных объекта этого самого Сканнера ¯\_(ツ)_/¯
         int ID = generateID();
         Status status = Status.NEW;
         return new Subtask(belonging, name, ID, status);
