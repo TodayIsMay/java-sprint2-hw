@@ -38,7 +38,7 @@ public class Main {
                     }
                     break;
                 case 2:
-                    ArrayList<ArrayList<Subtask>> list = manager.showAllSubtasksList();
+                    List<ArrayList<Subtask>> list = manager.showAllSubtasksList();
                     System.out.println("Список всех подзадач.");
                     System.out.println("_____________________");
                     for (ArrayList<Subtask> subtasks : list) {
@@ -104,9 +104,31 @@ public class Main {
                     }
                     break;
                 case 7:
-                        System.out.println("Введите ID.");
-                        int Id = scanner.nextInt();
-                        manager.updateStatus(Id);
+                    System.out.println("Какую задачу надо обновить?");
+                    System.out.println("1 - эпик");
+                    System.out.println("2 - подзадачу");
+                    System.out.println("3 - простую задачу");
+                    command = scanner.nextInt();
+                    switch (command) {
+                        case 1:
+                            System.out.println("Введите ID эпика.");
+                            int id = scanner.nextInt();
+                            Epic epic = creator.createEpic();
+                            manager.updateEpic(epic, id);
+                            break;
+                        case 2:
+                            System.out.println("Введите ID подзадачи.");
+                            id = scanner.nextInt();
+                            Subtask subtask = creator.createSubtask();
+                            manager.updateSubtask(subtask, id);
+                            break;
+                        case 3:
+                            System.out.println("Введите ID простой задачи.");
+                            id = scanner.nextInt();
+                            Task task = creator.createTask();
+                            manager.updateTask(task, id);
+                            break;
+                    }
                     break;
                 case 8:
                     System.out.println("Удаление ранее добавленных задач.");
@@ -121,16 +143,16 @@ public class Main {
                         manager.deleteAllTasks();
                     } else if (newCommand == 2) {
                         System.out.println("Введите ID подзадачи:");
-                        Id = scanner.nextInt();
-                        manager.deleteSubtask(Id);
+                        int id = scanner.nextInt();
+                        manager.deleteSubtask(id);
                     } else if (newCommand == 3) {
                         System.out.println("Введите ID эпика");
-                        Id = scanner.nextInt();
-                        manager.deleteEpic(Id);
+                        int id = scanner.nextInt();
+                        manager.deleteEpic(id);
                     } else if (newCommand == 4) {
                         System.out.println("Введите ID простой задачи.");
-                        Id = scanner.nextInt();
-                        manager.deleteTask(Id);
+                        int id = scanner.nextInt();
+                        manager.deleteTask(id);
                     } else {
                         System.out.println("Такой команды нет.");
                     }

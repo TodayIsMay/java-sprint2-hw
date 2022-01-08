@@ -24,9 +24,9 @@ public class Creator {
 
     public Subtask createSubtask() {
         System.out.println("К какому эпику относится подзадача(ID)?");
-        int belonging = Integer.parseInt(scanner.nextLine());//либо я туплю, либо только так можно добиться того, чтобы
-        System.out.println("Введите название подзадачи");    //Сканнер ждал ввода и не летел дальше, не используя при
-        String name = scanner.nextLine();                    //этом два разных объекта этого самого Сканнера ¯\_(ツ)_/¯
+        int belonging = Integer.parseInt(scanner.nextLine());
+        System.out.println("Введите название подзадачи");
+        String name = scanner.nextLine();
         int ID = generateID();
         Status status = Status.NEW;
         return new Subtask(belonging, name, ID, status);

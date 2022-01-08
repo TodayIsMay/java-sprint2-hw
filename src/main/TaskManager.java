@@ -18,9 +18,9 @@ public interface TaskManager {
 
     void addTask(Task task);
 
-    ArrayList<ArrayList<Subtask>> showAllSubtasksList();
+    List<ArrayList<Subtask>> showAllSubtasksList();
 
-    ArrayList<Subtask> showSubtasksFromEpic(int Id);
+    List<Subtask> showSubtasksFromEpic(int Id);
 
     Epic getEpicById(int Id);
 
@@ -28,9 +28,11 @@ public interface TaskManager {
 
     Task getTaskById(int Id);
 
-    void updateStatus(int Id);
+    void updateEpic(Epic epic, int id);
 
-    void chooseStatus(Task task);
+    void updateSubtask(Subtask subtask, int id);
+
+    void updateTask(Task task, int id);
 
     void deleteAllTasks();
 
