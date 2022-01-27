@@ -7,7 +7,6 @@ import tasks.Task;
 import utilities.Creator;
 import utilities.Managers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
