@@ -13,8 +13,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> node = new Node<>(task);
         Node<Task> newNode = listOfTasks.linkLast(node);
         if (listOfTasks.size() > HISTORY_LENGTH) {
-            List<Task> list = getHistory();
-            Task task1 = list.get(0);
+            Task task1 = getHistory().get(0);
             remove(task1.getId());
         }
         if (!map.containsKey(task.getId())) {
@@ -66,7 +65,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             return node;
         }
 
-        //метод getTasks() убрала т.к. он, как мне кажется, оказался ненужным.
         public void removeNode(Node<T> node) {
             if (node.getPrev() != null) {
                 node.getPrev().setNext(node.getNext());
