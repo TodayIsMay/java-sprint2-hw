@@ -44,6 +44,7 @@ public class Epic extends Task {
         this.setName(epic.getName());
     }
 
+    @Override
     public Status getStatus() {
         Status status;
         boolean isDoneOrInProgress = false;

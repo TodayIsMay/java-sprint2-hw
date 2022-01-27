@@ -10,7 +10,7 @@ public class Subtask extends Task {
 
     public void update(Subtask subtask) {
         this.setName(subtask.getName());
-        this.setStatus(chooseStatus());
+        this.setStatus(subtask.getStatus());
     }
 
     @Override

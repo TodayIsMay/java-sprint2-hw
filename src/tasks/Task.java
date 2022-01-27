@@ -1,16 +1,13 @@
 package tasks;
 
-import java.util.Scanner;
-
 public class Task {
-    Scanner newScan = new Scanner(System.in);
     private String name;
     private int id;
     private Status status;
 
-    public Task(String name, int Id, Status status) {
+    public Task(String name, int id, Status status) {
         this.name = name;
-        this.id = Id;
+        this.id = id;
         this.status = status;
     }
 
@@ -26,32 +23,13 @@ public class Task {
         return id;
     }
 
-    public void setId(int Id) {
-        this.id = Id;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void update(Task task) {
         this.setName(task.getName());
-        this.setStatus(chooseStatus());
-    }
-
-    public Status chooseStatus() {
-        Status result = null;
-        System.out.println("Выберите новый статус: " + "\n" + "1 - NEW"
-                + "\n" + "2 - IN_PROGRESS" + "\n" + "3 - DONE");
-        int variant = newScan.nextInt();
-        switch (variant) {
-            case 1:
-                result = Status.NEW;
-                break;
-            case 2:
-                result = Status.IN_PROGRESS;
-                break;
-            case 3:
-                result = Status.DONE;
-                break;
-        }
-        return result;
+        this.setStatus(task.getStatus());
     }
 
     public Status getStatus() {
