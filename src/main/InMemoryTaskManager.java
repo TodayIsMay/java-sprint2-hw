@@ -10,15 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
-    HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+    private HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
     private List<Task> tasks;
     private List<Epic> epics;
-    private List<Task> history;
 
     public InMemoryTaskManager() {
         tasks = new ArrayList<>();
         epics = new ArrayList<>();
-        history = new ArrayList<>();
     }
 
     @Override

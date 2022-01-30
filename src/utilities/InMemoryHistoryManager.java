@@ -13,7 +13,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> node = new Node<>(task);
         Node<Task> newNode = listOfTasks.linkLast(node);
         if (listOfTasks.size() > HISTORY_LENGTH) {
-            remove(getHistory().get(0).getId());
+            remove(listOfTasks.getFirst().getData().getId());
         }
         if (!map.containsKey(task.getId())) {
             map.put(task.getId(), newNode);
@@ -48,6 +48,10 @@ public class InMemoryHistoryManager implements HistoryManager {
         private Node<T> head;
         private Node<T> tail;
         private int size = 0;
+
+        public Node<T> getFirst() {
+            return head;
+        }
 
         public Node<T> linkLast(Node<T> node) {
             final Node<T> oldTail = tail;
