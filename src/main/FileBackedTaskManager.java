@@ -1,0 +1,173 @@
+package main;
+
+import tasks.*;
+import utilities.HistoryManager;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class FileBackedTaskManager extends InMemoryTaskManager {
+    private static int max = 0;
+    private String file;
+
+    public FileBackedTaskManager(String file) {
+        super();
+        this.file = file;
+    }
+
+    public static FileBackedTaskManager loadFromFile(String file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        Map<Integer, Task> map = new HashMap<>();
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            while (br.ready()) {
+                String str = br.readLine();
+                if (!str.isEmpty() | !str.isBlank()) {
+                    Task task = new Task();
+                    task = task.fromString(str);
+                    if (task.getClass().getName().equals("tasks.Epic")) {
+                        manager.addEpic((Epic) task);
+                        map.put(task.getId(), task);
+                        if (task.getId() > max) {
+                            max = task.getId();
+                        }
+                    } else if (task.getClass().getName().equals("tasks.Subtask")) {
+                        manager.addSubtask((Subtask) task);
+                        map.put(task.getId(), task);
+                        if (task.getId() > max) {
+                            max = task.getId();
+                        }
+                    } else if (task.getClass().getName().equals("tasks.Task")) {
+                        manager.addTask(task);
+                        map.put(task.getId(), task);
+                        if (task.getId() > max) {
+                            max = task.getId();
+                        }
+                    }
+                } else {
+                    String history = br.readLine();
+                    for (Integer id : fromString(history)) {
+                        manager.getInMemoryHistoryManager().add(map.get(id));
+                    }
+                }
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден!");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return manager;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public void save() {
+        try (FileWriter out = new FileWriter(file, StandardCharsets.UTF_8)) {
+            for (Epic epic : getEpics()) {
+                out.write(epic.toString());
+                for (Subtask subtask : epic.getSubtasks()) {
+                    out.write(subtask.toString());
+                }
+            }
+            for (Task task : getTasks()) {
+                out.write(task.toString());
+            }
+            if (toString(super.getInMemoryHistoryManager()) != null) {
+                out.write("\n");
+                out.write(toString(super.getInMemoryHistoryManager()));
+            }
+        } catch (IOException e) {
+            try {
+                throw new ManagerSaveException("Произошла ошибка при автосохранении!");
+            } catch (ManagerSaveException ex) {
+                System.out.println(ex.getMessage());
+            }
+        }
+    }
+
+    @Override
+    public void addEpic(Epic epic) {
+        super.addEpic(epic);
+        save();
+    }
+
+    @Override
+    public void addSubtask(Subtask subtask) {
+        super.addSubtask(subtask);
+        save();
+    }
+
+    @Override
+    public void addTask(Task task) {
+        super.addTask(task);
+        save();
+    }
+
+    @Override
+    public void updateEpic(Epic epic, int id) {
+        super.updateEpic(epic, id);
+        save();
+    }
+
+    @Override
+    public void updateSubtask(Subtask subtask, int id) {
+        super.updateSubtask(subtask, id);
+        save();
+    }
+
+    @Override
+    public void updateTask(Task task, int id) {
+        super.updateTask(task, id);
+        save();
+    }
+
+    @Override
+    public void deleteAllTasks() {
+        super.deleteAllTasks();
+        save();
+    }
+
+    @Override
+    public void deleteSubtask(int id) {
+        super.deleteSubtask(id);
+        save();
+    }
+
+    @Override
+    public void deleteEpic(int id) {
+        super.deleteEpic(id);
+        save();
+    }
+
+    @Override
+    public void deleteTask(int id) {
+        super.deleteTask(id);
+        save();
+    }
+
+    public static String toString(HistoryManager manager) {
+        if (!manager.getHistory().isEmpty()) {
+            StringBuilder res = new StringBuilder();
+            for (Task task : manager.getHistory()) {
+                String id = String.valueOf(task.getId());
+                res.append(id).append(", ");
+            }
+            return res.deleteCharAt(res.length() - 2).toString();
+        }
+        return null;
+    }
+
+    public static List<Integer> fromString(String value) {
+        List<Integer> ids = new ArrayList<>();
+        String[] idArray = value.split(",");
+        for (int i = 0; i < idArray.length; i++) {
+            ids.add(Integer.parseInt(idArray[i].strip()));
+        }
+        return ids;
+    }
+}

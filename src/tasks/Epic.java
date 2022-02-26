@@ -4,26 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    private String epicDescription;
     private List<Subtask> subtasks;
 
-    public Epic(String name, String epicDescription, int id, Status status) {
-        super(name, id, status);
-        this.epicDescription = epicDescription;
+    public Epic(String name, String description, int id, Status status) {
+        super(name, description, id, status);
         this.subtasks = new ArrayList<>();
     }
 
     public ArrayList<Subtask> getSubtasks() {
         ArrayList<Subtask> clone = new ArrayList<>(subtasks);
         return clone;
-    }
-
-    public void setEpicDescription(String epicDescription) {
-        this.epicDescription = epicDescription;
-    }
-
-    public String getEpicDescription() {
-        return epicDescription;
     }
 
     public void addSub(Subtask sub) {
@@ -40,7 +30,7 @@ public class Epic extends Task {
     }
 
     public void update(Epic epic) {
-        this.setEpicDescription(epic.getEpicDescription());
+        setDescription(epic.getDescription());
         this.setName(epic.getName());
     }
 

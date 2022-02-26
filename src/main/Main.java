@@ -5,17 +5,19 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 import utilities.Creator;
-import utilities.Managers;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static TaskManager manager = Managers.getDefault();
-    private static Creator creator = new Creator();
+    private static FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+
+    private static Creator creator;
 
     public static void main(String[] args) {
+        //Решила точку входа оставить здесь, раз уж она уже есть. Но если критично - перенесу.
+        creator = new Creator(fileBackedTaskManager.getMax());
         loop:
         while (true) {
             printMenu();
@@ -49,6 +51,7 @@ public class Main {
                     showHistory();
                     break;
                 case 0:
+                    exit();
                     break loop;
                 default:
                     System.out.println("Такой команды нет");
@@ -63,18 +66,18 @@ public class Main {
         System.out.println("3 - простая задача");
         int type = scanner.nextInt();
         if (type == 1) {
-            manager.addEpic(creator.createEpic());
+            fileBackedTaskManager.addEpic(creator.createEpic());
         } else if (type == 2) {
-            manager.addSubtask(creator.createSubtask());
+            fileBackedTaskManager.addSubtask(creator.createSubtask());
         } else if (type == 3) {
-            manager.addTask(creator.createTask());
+            fileBackedTaskManager.addTask(creator.createTask());
         } else {
             System.out.println("Такой команды нет.");
         }
     }
 
     public static void showAllSubtasks() {
-        List<Subtask> subtasks = manager.showAllSubtasksList();
+        List<Subtask> subtasks = fileBackedTaskManager.showAllSubtasksList();
         System.out.println("Список всех подзадач.");
         System.out.println("_____________________");
         for (Subtask sub : subtasks) {
@@ -85,7 +88,7 @@ public class Main {
     }
 
     public static void showAllEpics() {
-        List<Epic> epics = manager.getEpics();
+        List<Epic> epics = fileBackedTaskManager.getEpics();
         System.out.println("Список всех эпиков.");
         System.out.println("___________________");
         for (Epic epic : epics) {
@@ -97,7 +100,7 @@ public class Main {
     }
 
     public static void showAllTasks() {
-        List<Task> tasks = manager.getTasks();
+        List<Task> tasks = fileBackedTaskManager.getTasks();
         System.out.println("Список всех простых задач.");
         System.out.println("___________________________");
         for (Task task : tasks) {
@@ -113,7 +116,7 @@ public class Main {
         int epicID = scanner.nextInt();
         System.out.println("Получить все подзадачи эпика " + epicID + ".");
         System.out.println("__________________________________________");
-        for (Subtask subtask : manager.showSubtasksFromEpic(epicID)) {
+        for (Subtask subtask : fileBackedTaskManager.showSubtasksFromEpic(epicID)) {
             System.out.println(subtask.getName());
         }
         System.out.println("__________________________________");
@@ -130,17 +133,17 @@ public class Main {
             case 1:
                 System.out.println("Введите ID эпика:");
                 result = scanner.nextInt();
-                System.out.println(manager.getEpicById(result).getName());
+                System.out.println(fileBackedTaskManager.getEpicById(result).getName());
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи");
                 result = scanner.nextInt();
-                System.out.println(manager.getSubtaskById(result).getName());
+                System.out.println(fileBackedTaskManager.getSubtaskById(result).getName());
                 break;
             case 3:
                 System.out.println("Введите ID простой задачи.");
                 result = scanner.nextInt();
-                System.out.println(manager.getTaskById(result).getName());
+                System.out.println(fileBackedTaskManager.getTaskById(result).getName());
                 break;
             default:
                 System.out.println("Такой команды нет");
@@ -158,21 +161,21 @@ public class Main {
                 System.out.println("Введите ID эпика.");
                 int id = scanner.nextInt();
                 Epic epic = creator.createEpic();
-                manager.updateEpic(epic, id);
+                fileBackedTaskManager.updateEpic(epic, id);
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи.");
                 id = scanner.nextInt();
                 Subtask subtask = creator.createSubtask();
                 subtask.setStatus(chooseStatus());
-                manager.updateSubtask(subtask, id);
+                fileBackedTaskManager.updateSubtask(subtask, id);
                 break;
             case 3:
                 System.out.println("Введите ID простой задачи.");
                 id = scanner.nextInt();
                 Task task = creator.createTask();
                 task.setStatus(chooseStatus());
-                manager.updateTask(task, id);
+                fileBackedTaskManager.updateTask(task, id);
                 break;
             default:
                 System.out.println("Такой команды нет");
@@ -189,22 +192,22 @@ public class Main {
         int newCommand = scanner.nextInt();
         switch (newCommand) {
             case 1:
-                manager.deleteAllTasks();
+                fileBackedTaskManager.deleteAllTasks();
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи:");
                 int id = scanner.nextInt();
-                manager.deleteSubtask(id);
+                fileBackedTaskManager.deleteSubtask(id);
                 break;
             case 3:
                 System.out.println("Введите ID эпика");
                 id = scanner.nextInt();
-                manager.deleteEpic(id);
+                fileBackedTaskManager.deleteEpic(id);
                 break;
             case 4:
                 System.out.println("Введите ID простой задачи.");
                 id = scanner.nextInt();
-                manager.deleteTask(id);
+                fileBackedTaskManager.deleteTask(id);
                 break;
             default:
                 System.out.println("Такой команды нет.");
@@ -212,7 +215,7 @@ public class Main {
     }
 
     public static void showHistory() {
-        for (Task task : manager.showHistory()) {
+        for (Task task : fileBackedTaskManager.showHistory()) {
             System.out.println(task.getName());
         }
     }
@@ -236,6 +239,10 @@ public class Main {
                 System.out.println("Такой команды нет");
         }
         return result;
+    }
+
+    public static void exit(){
+        fileBackedTaskManager.save();
     }
 
     public static void printMenu() {

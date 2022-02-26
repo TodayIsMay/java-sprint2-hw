@@ -5,12 +5,15 @@ import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Creator {
-    private ArrayList<Integer> list = new ArrayList<>();
+    private int maxId;
     private Scanner scanner = new Scanner(System.in);
+
+    public Creator(int maxId) {
+        this.maxId = maxId;
+    }
 
     public Epic createEpic() {
         System.out.println("Введите название эпика");
@@ -41,13 +44,7 @@ public class Creator {
     }
 
     public int generateID() {
-        int result = 1;
-        for (Integer number : list) {
-            if (number == result) {
-                result++;
-            }
-        }
-        list.add(result);
-        return result;
+        this.maxId++;
+        return maxId;
     }
 }

@@ -173,19 +173,21 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void deleteSubtask(int id) {
         Subtask target = null;
+        Epic targetEpic = null;
         for (Epic epic : epics) {
             for (Subtask subtask : epic.getSubtasks()) {
                 if (subtask.getId() == id) {
                     target = subtask;
+                    targetEpic = epic;
                     break;
                 }
             }
+        }
             if (target != null) {
-                epic.deleteSubtask(target);
+                targetEpic.deleteSubtask(target);
             } else {
                 System.out.println("Подзадача с таким ID не найдена!");
             }
-        }
         inMemoryHistoryManager.remove(id);
         System.out.println("Задача удалена!");
     }
@@ -232,5 +234,9 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public List<Task> showHistory() {
         return inMemoryHistoryManager.getHistory();
+    }
+
+    public HistoryManager getInMemoryHistoryManager() {
+        return inMemoryHistoryManager;
     }
 }

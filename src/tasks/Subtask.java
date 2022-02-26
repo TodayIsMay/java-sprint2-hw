@@ -1,11 +1,9 @@
 package tasks;
 
 public class Subtask extends Task {
-    private int belonging;
 
     public Subtask(int belonging, String name, int id, Status status) {
-        super(name, id, status);
-        this.belonging = belonging;
+        super(name, id, status, belonging);
     }
 
     public void update(Subtask subtask) {
@@ -16,9 +14,5 @@ public class Subtask extends Task {
     @Override
     public void setName(String name) {
         super.setName(name);
-    }
-
-    public int getBelonging() {
-        return belonging;
     }
 }
