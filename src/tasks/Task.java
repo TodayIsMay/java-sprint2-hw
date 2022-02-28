@@ -2,32 +2,22 @@ package tasks;
 
 public class Task {
     private String name;
-    private String description;
     private int id;
     private Status status;
-    private int belonging;
+
+    public Task(String name, int id, Status status) {
+        this.name = name;
+        this.id = id;
+        this.status = status;
+    }
 
     @Override
     public String toString() {
-        String type = this.getClass().getName();
-        Type eType = null;
-        switch (type) {
-            case "tasks.Epic":
-                eType = Type.EPIC;
-                return id + "," + eType + "," +
-                        name + "," + this.getStatus() + "," + description + "\n";
-            case "tasks.Subtask":
-                eType = Type.SUBTASK;
-                return id + "," + eType + "," +
-                        name + "," + status + "," + belonging + "\n";
-            case "tasks.Task":
-                eType = Type.TASK;
-                break;
-        }
-        return id + "," + eType + "," +
-                name + "," + status + "\n";
+        return this.getId() + "," + Type.TASK + "," +
+                this.getName() + "," + this.getStatus() + "\n";
     }
-    public Task fromString(String value) {
+
+    public static Task fromString(String value) {
         Task task = null;
         Status status = null;
         String[] valueArr = value.split(",");
@@ -56,25 +46,6 @@ public class Task {
         return task;
     }
 
-    public Task(String name, int id, Status status) {
-        this.name = name;
-        this.id = id;
-        this.status = status;
-    }
-    public Task(String name, int id, Status status, int belonging) {
-        this.name = name;
-        this.id = id;
-        this.status = status;
-        this.belonging = belonging;
-    }
-    public Task(String name, String description, int id, Status status) {
-        this.name = name;
-        this.description = description;
-        this.id = id;
-        this.status = status;
-    }
-    public Task(){}
-
     public String getName() {
         return name;
     }
@@ -102,21 +73,5 @@ public class Task {
 
     public void setStatus(Status status) {
         this.status = status;
-    }
-
-    public int getBelonging() {
-        return belonging;
-    }
-
-    public void setBelonging(int belonging) {
-        this.belonging = belonging;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
     }
 }

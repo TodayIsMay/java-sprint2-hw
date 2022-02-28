@@ -1,5 +1,7 @@
 package main;
 
+import exceptions.ManagerSaveException;
+import managers.FileBackedTaskManager;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
@@ -16,13 +18,15 @@ public class Main {
     private static Creator creator;
 
     public static void main(String[] args) {
-        //Решила точку входа оставить здесь, раз уж она уже есть. Но если критично - перенесу.
-        creator = new Creator(fileBackedTaskManager.getMax());
+        creator = new Creator(fileBackedTaskManager.getMaxIdFromFile());
         loop:
         while (true) {
             printMenu();
             int command = scanner.nextInt();
             switch (command) {
+                case 99:
+                    test();
+                    break;
                 case 1:
                     addNewTask();
                     break;
@@ -133,17 +137,29 @@ public class Main {
             case 1:
                 System.out.println("Введите ID эпика:");
                 result = scanner.nextInt();
-                System.out.println(fileBackedTaskManager.getEpicById(result).getName());
+                try {
+                    System.out.println(fileBackedTaskManager.getEpicById(result).getName());
+                }catch (NullPointerException e) {
+                    System.out.println("Задача с таким id не найдена!\n");
+                }
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи");
                 result = scanner.nextInt();
-                System.out.println(fileBackedTaskManager.getSubtaskById(result).getName());
+                try {
+                    System.out.println(fileBackedTaskManager.getSubtaskById(result).getName());
+                }catch (NullPointerException e){
+                    System.out.println("Задача с таким id не найдена!\n");
+                }
                 break;
             case 3:
                 System.out.println("Введите ID простой задачи.");
                 result = scanner.nextInt();
-                System.out.println(fileBackedTaskManager.getTaskById(result).getName());
+                try {
+                    System.out.println(fileBackedTaskManager.getTaskById(result).getName());
+                }catch (NullPointerException e){
+                    System.out.println("Задача с таким id не найдена!\n");
+                }
                 break;
             default:
                 System.out.println("Такой команды нет");
@@ -215,9 +231,12 @@ public class Main {
     }
 
     public static void showHistory() {
+        System.out.println("История");
+        System.out.println("___________________");
         for (Task task : fileBackedTaskManager.showHistory()) {
             System.out.println(task.getName());
         }
+        System.out.println("___________________");
     }
 
     public static Status chooseStatus() {
@@ -242,11 +261,57 @@ public class Main {
     }
 
     public static void exit(){
-        fileBackedTaskManager.save();
+        try {
+            fileBackedTaskManager.save();
+        } catch (ManagerSaveException e) {
+            System.out.println("Main: " + e.getMessage());
+        }
+    }
+
+    public static void test(){
+        fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW));
+        fileBackedTaskManager.addEpic(new Epic("Второй эпик", "другое описание", 5, Status.NEW));
+        fileBackedTaskManager.addTask(new Task("простая задача", 6, Status.NEW));
+        showAllSubtasks();
+        showAllEpics();
+        showAllTasks();
+        for(Subtask subtask : fileBackedTaskManager.showSubtasksFromEpic(1)){
+            System.out.println(subtask);
+        }
+        fileBackedTaskManager.getEpicById(1);
+        showHistory();
+        fileBackedTaskManager.getSubtaskById(2);
+        fileBackedTaskManager.getSubtaskById(3);
+        fileBackedTaskManager.getSubtaskById(4);
+        showHistory();
+        fileBackedTaskManager.deleteEpic(1);
+        showHistory();
+        fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW));
+        fileBackedTaskManager.updateSubtask(
+                new Subtask(1, "найти кошку", 2, Status.IN_PROGRESS), 2);
+        System.out.println(fileBackedTaskManager.getEpicById(1));
+        fileBackedTaskManager.updateSubtask(
+                new Subtask(1, "найти кошку", 2, Status.DONE), 2);
+        fileBackedTaskManager.updateSubtask(
+                new Subtask(1, "открыть корм", 3,Status.DONE), 3);
+        fileBackedTaskManager.updateSubtask(
+                new Subtask(1, "насыпать корм в миску", 4, Status.DONE), 4);
+        System.out.println(fileBackedTaskManager.getEpicById(1));
+        fileBackedTaskManager.getSubtaskById(2);
+        fileBackedTaskManager.getSubtaskById(3);
+        fileBackedTaskManager.getSubtaskById(4);
+        showHistory();
     }
 
     public static void printMenu() {
         System.out.println("Что вы хотите сделать?");
+        System.out.println("99 - test");
         System.out.println("1 - добавить новую задачу");
         System.out.println("2 - посмотреть список подзадач.");
         System.out.println("3 - посмотреть список эпиков.");
