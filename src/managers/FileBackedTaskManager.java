@@ -6,15 +6,11 @@ import utilities.HistoryManager;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static int maxIdFromFile = 0;
     private String file;
-    private static TaskManager taskManager = new InMemoryTaskManager();
 
     public FileBackedTaskManager(String file) {
         super();
@@ -23,7 +19,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public static FileBackedTaskManager loadFromFile(String file) {
         FileBackedTaskManager manager = new FileBackedTaskManager(file);
-
         Map<Integer, Task> map = new HashMap<>();
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (br.ready()) {
@@ -68,7 +63,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         return maxIdFromFile;
     }
 
-    public void save() throws ManagerSaveException {
+    public void save() {
         try (FileWriter out = new FileWriter(file, StandardCharsets.UTF_8)) {
             for (Epic epic : getEpics()) {
                 out.write(epic.toString());
@@ -95,11 +90,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void addEpic(Epic epic) {
         super.addEpic(epic);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     private void addSubtaskUnsafe(Subtask subtask) {
@@ -109,11 +100,7 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void addSubtask(Subtask subtask) {
         super.addSubtask(subtask);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     private void addTaskUnsafe(Task task) {
@@ -123,113 +110,69 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public void addTask(Task task) {
         super.addTask(task);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateEpic(Epic epic, int id) {
         super.updateEpic(epic, id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateSubtask(Subtask subtask, int id) {
         super.updateSubtask(subtask, id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void updateTask(Task task, int id) {
         super.updateTask(task, id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteAllTasks() {
         super.deleteAllTasks();
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteSubtask(int id) {
         super.deleteSubtask(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteEpic(int id) {
         super.deleteEpic(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public void deleteTask(int id) {
         super.deleteTask(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
     }
 
     @Override
     public Epic getEpicById(int id) {
         Epic epic = super.getEpicById(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
         return epic;
     }
 
     @Override
     public Subtask getSubtaskById(int id) {
         Subtask subtask = super.getSubtaskById(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
         return subtask;
     }
 
     @Override
     public Task getTaskById(int id) {
         Task task = super.getTaskById(id);
-        try {
-            save();
-        } catch (ManagerSaveException e) {
-            System.out.println(e.getMessage());
-        }
+        save();
         return task;
     }
 
@@ -252,5 +195,18 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
             ids.add(Integer.parseInt(idArray[i].strip()));
         }
         return ids;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        FileBackedTaskManager that = (FileBackedTaskManager) o;
+        return Objects.equals(file, that.file);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(file);
     }
 }
