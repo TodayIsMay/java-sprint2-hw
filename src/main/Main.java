@@ -302,11 +302,11 @@ public class Main {
         fileBackedTaskManager.getSubtaskById(3);
         fileBackedTaskManager.getSubtaskById(4);
         showHistory();
-        if(fileBackedTaskManager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"))){
-            System.out.println(true);
-        }else{
-            System.out.println(false);
-        }
+        System.out.println(isEqual());
+    }
+
+    public static boolean isEqual(){
+        return fileBackedTaskManager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"));
     }
 
     public static void printMenu() {

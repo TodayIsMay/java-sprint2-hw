@@ -199,8 +199,20 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     @Override
     public boolean equals(Object o) {
+        List<Subtask> thisSubtasks = new ArrayList<>();
+        List<Subtask> oSubtasks = new ArrayList<>();
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        for (Epic epic : this.getEpics()) {
+            thisSubtasks.addAll(epic.getSubtasks());
+        }
+        for (Epic epic : ((FileBackedTaskManager) o).getEpics()) {
+            oSubtasks.addAll(epic.getSubtasks());
+        }
+        if (!this.getTasks().equals(((FileBackedTaskManager) o).getTasks()) &&
+                !this.getEpics().equals(((FileBackedTaskManager) o).getEpics()) &&
+                !this.showHistory().equals(((FileBackedTaskManager) o).showHistory()) &&
+                !thisSubtasks.equals(oSubtasks)) return false;
         FileBackedTaskManager that = (FileBackedTaskManager) o;
         return Objects.equals(file, that.file);
     }
