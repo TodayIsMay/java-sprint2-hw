@@ -8,12 +8,10 @@ import tasks.Subtask;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class EpicTest {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     Epic epic;
     Subtask subtask;
     Subtask subtask1;
