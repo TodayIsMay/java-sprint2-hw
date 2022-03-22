@@ -1,11 +1,28 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private String description;
     private List<Subtask> subtasks;
+    Duration duration;
+    LocalDateTime startTime;
+    LocalDateTime endTime;
+
+    public Epic(String name, String description, int id, Status status, Duration duration, LocalDateTime startTime,
+                LocalDateTime endTime) {
+        super(name, id, status);
+        this.description = description;
+        this.subtasks = new ArrayList<>();
+        this.duration = duration;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 
     public Epic(String name, String description, int id, Status status) {
         super(name, id, status);
@@ -69,9 +86,46 @@ public class Epic extends Task {
     }
 
     @Override
+    public LocalDateTime getStartTime() {
+        LocalDateTime startTime = LocalDateTime.MAX;
+        for(Subtask subtask: subtasks) {
+            if(subtask.getStartTime().isBefore(startTime)) {
+                startTime = subtask.getStartTime();
+            }
+        }
+        this.startTime = startTime;
+        return startTime;
+    }
+
+    @Override
+    public LocalDateTime getEndTime() {
+        LocalDateTime endTime = LocalDateTime.MIN;
+        for(Subtask subtask: subtasks) {
+            if(subtask.getEndTime().isAfter(endTime)) {
+                endTime = subtask.getEndTime();
+            }
+        }
+        this.endTime = endTime;
+        return endTime;
+    }
+
+    @Override
+    public long getDuration() {
+        this.duration = Duration.between(startTime, endTime);
+        return duration.toHours();
+    }
+
+    @Override
     public String toString() {
-        return this.getId() + "," + Type.EPIC + "," +
-                this.getName() + "," + this.getStatus() + "," + this.getDescription() + "\n";
+        if(startTime == null | endTime == null | duration == null) {
+            return this.getId() + "," + Type.EPIC + "," +
+                    this.getName() + "," + this.getStatus() + "," + this.getDescription() + "\n";
+        }else {
+            return this.getId() + "," + Type.EPIC + "," +
+                    this.getName() + "," + this.getStatus() + "," + this.getDescription() + "," +
+                    this.getDuration() + "," + this.getStartTime().format(formatter) + "," +
+                    this.getEndTime().format(formatter) + "\n";
+        }
     }
 
     public String getDescription() {

@@ -114,21 +114,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void updateEpic(Epic epic, int id) {
-        super.updateEpic(epic, id);
+    public String updateEpic(Epic epic, int id) {
+        String result = super.updateEpic(epic, id);
         save();
+        return result;
     }
 
     @Override
-    public void updateSubtask(Subtask subtask, int id) {
-        super.updateSubtask(subtask, id);
+    public String updateSubtask(Subtask subtask, int id) {
+        String result = super.updateSubtask(subtask, id);
         save();
+        return result;
     }
 
     @Override
-    public void updateTask(Task task, int id) {
-        super.updateTask(task, id);
+    public String updateTask(Task task, int id) {
+        String result = super.updateTask(task, id);
         save();
+        return result;
     }
 
     @Override
@@ -138,21 +141,24 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public void deleteSubtask(int id) {
-        super.deleteSubtask(id);
+    public String deleteSubtask(int id) {
+        String result = super.deleteSubtask(id);
         save();
+        return result;
     }
 
     @Override
-    public void deleteEpic(int id) {
-        super.deleteEpic(id);
+    public String deleteEpic(int id) {
+        String result = super.deleteEpic(id);
         save();
+        return result;
     }
 
     @Override
-    public void deleteTask(int id) {
-        super.deleteTask(id);
+    public String deleteTask(int id) {
+        String result = super.deleteTask(id);
         save();
+        return result;
     }
 
     @Override

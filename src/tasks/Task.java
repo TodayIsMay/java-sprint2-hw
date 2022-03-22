@@ -1,11 +1,24 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Task {
     private String name;
     private int id;
     private Status status;
+    private Duration duration;
+    private LocalDateTime startTime;
+
+    public Task(String name, int id, Status status, Duration duration, LocalDateTime startTime) {
+        this.name = name;
+        this.id = id;
+        this.status = status;
+        this.duration = duration;
+        this.startTime = startTime;
+    }
 
     public Task(String name, int id, Status status) {
         this.name = name;
@@ -13,13 +26,20 @@ public class Task {
         this.status = status;
     }
 
+    public LocalDateTime getEndTime() {
+        return startTime.plus(duration);
+    }
+
     @Override
     public String toString() {
+        DateTimeFormatter startTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         return this.getId() + "," + Type.TASK + "," +
-                this.getName() + "," + this.getStatus() + "\n";
+                this.getName() + "," + this.getStatus() + "," + this.getDuration() + "," +
+                this.startTime.format(startTimeFormatter) + "\n";
     }
 
     public static Task fromString(String value) {
+        DateTimeFormatter startTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         Task task = null;
         Status status = null;
         String[] valueArr = value.split(",");
@@ -38,14 +58,33 @@ public class Task {
         String name = valueArr[2];
         if (valueArr[1].equals(Type.EPIC.toString())) {
             String description = valueArr[4];
-            task = new Epic(name, description, id, status);
+            if(valueArr.length == 8) {
+                Duration duration = Duration.ofMillis(Long.parseLong(valueArr[5]) * 3600000);
+                LocalDateTime startTime = LocalDateTime.parse(valueArr[6], startTimeFormatter);
+                LocalDateTime endTime = LocalDateTime.parse(valueArr[7], startTimeFormatter);
+                task = new Epic(name, description, id, status, duration, startTime, endTime);
+            } else {
+                task = new Epic(name, description, id, status);
+            }
         } else if (valueArr[1].equals(Type.SUBTASK.toString())) {
             int belonging = Integer.parseInt(valueArr[4]);
-            task = new Subtask(belonging, name, id, status);
+            Duration duration = Duration.ofHours(Long.parseLong(valueArr[5]));
+            LocalDateTime startTime = LocalDateTime.parse(valueArr[6], startTimeFormatter);
+            task = new Subtask(belonging, name, id, status, duration, startTime);
         } else if (valueArr[1].equals(Type.TASK.toString())) {
-            task = new Task(name, id, status);
+            Duration duration = Duration.ofMillis(Long.parseLong(valueArr[4]) * 3600000);
+            LocalDateTime startTime = LocalDateTime.parse(valueArr[5], startTimeFormatter);
+            task = new Task(name, id, status, duration, startTime);
         }
         return task;
+    }
+
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public long getDuration() {
+        return  duration.toHours();
     }
 
     public String getName() {

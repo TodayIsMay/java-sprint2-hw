@@ -7,12 +7,17 @@ import tasks.Subtask;
 import tasks.Task;
 import utilities.Creator;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+    private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private static Creator creator;
 
@@ -52,6 +57,9 @@ public class Main {
                     break;
                 case 9:
                     showHistory();
+                    break;
+                case 10:
+                    getPrioritizedTasks();
                     break;
                 case 0:
                     exit();
@@ -176,21 +184,21 @@ public class Main {
                 System.out.println("Введите ID эпика.");
                 int id = scanner.nextInt();
                 Epic epic = creator.createEpic();
-                fileBackedTaskManager.updateEpic(epic, id);
+                System.out.println(fileBackedTaskManager.updateEpic(epic, id));
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи.");
                 id = scanner.nextInt();
                 Subtask subtask = creator.createSubtask();
                 subtask.setStatus(chooseStatus());
-                fileBackedTaskManager.updateSubtask(subtask, id);
+                System.out.println(fileBackedTaskManager.updateSubtask(subtask, id));
                 break;
             case 3:
                 System.out.println("Введите ID простой задачи.");
                 id = scanner.nextInt();
                 Task task = creator.createTask();
                 task.setStatus(chooseStatus());
-                fileBackedTaskManager.updateTask(task, id);
+                System.out.println(fileBackedTaskManager.updateTask(task, id));
                 break;
             default:
                 System.out.println("Такой команды нет");
@@ -212,7 +220,7 @@ public class Main {
             case 2:
                 System.out.println("Введите ID подзадачи:");
                 int id = scanner.nextInt();
-                fileBackedTaskManager.deleteSubtask(id);
+                System.out.println(fileBackedTaskManager.deleteSubtask(id));
                 break;
             case 3:
                 System.out.println("Введите ID эпика");
@@ -259,17 +267,27 @@ public class Main {
         return result;
     }
 
+    public static void getPrioritizedTasks() {
+        for(Map.Entry<Task, String> entry: fileBackedTaskManager.getPrioritizedTasks().entrySet()) {
+            System.out.println(entry.getKey().getStartTime().format(formatter) + " " + entry.getValue());
+        }
+    }
+
     public static void exit() {
         fileBackedTaskManager.save();
     }
 
     public static void test() {
         fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 00:00", formatter)));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 01:00", formatter)));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 02:00", formatter)));
         fileBackedTaskManager.addEpic(new Epic("Второй эпик", "другое описание", 5, Status.NEW));
-        fileBackedTaskManager.addTask(new Task("простая задача", 6, Status.NEW));
+        fileBackedTaskManager.addTask(new Task("простая задача", 6, Status.NEW, Duration.ofHours(1),
+                LocalDateTime.parse("22.03.2022 03:00", formatter)));
         showAllSubtasks();
         showAllEpics();
         showAllTasks();
@@ -285,18 +303,25 @@ public class Main {
         fileBackedTaskManager.deleteEpic(1);
         showHistory();
         fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 00:00", formatter)));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 01:00", formatter)));
+        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW,
+                Duration.ofHours(1), LocalDateTime.parse("22.03.2022 02:00", formatter)));
         fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "найти кошку", 2, Status.IN_PROGRESS), 2);
+                new Subtask(1, "найти кошку", 2, Status.IN_PROGRESS, Duration.ofHours(1),
+                        LocalDateTime.parse("22.03.2022 00:00", formatter)), 2);
         System.out.println(fileBackedTaskManager.getEpicById(1));
         fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "найти кошку", 2, Status.DONE), 2);
+                new Subtask(1, "найти кошку", 2, Status.DONE, Duration.ofHours(1),
+                        LocalDateTime.parse("22.03.2022 00:00", formatter)), 2);
         fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "открыть корм", 3, Status.DONE), 3);
+                new Subtask(1, "открыть корм", 3, Status.DONE, Duration.ofHours(1),
+                        LocalDateTime.parse("22.03.2022 01:00", formatter)), 3);
         fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "насыпать корм в миску", 4, Status.DONE), 4);
+                new Subtask(1, "насыпать корм в миску", 4, Status.DONE, Duration.ofHours(1),
+                        LocalDateTime.parse("22.03.2022 02:00", formatter)), 4);
         System.out.println(fileBackedTaskManager.getEpicById(1));
         fileBackedTaskManager.getSubtaskById(2);
         fileBackedTaskManager.getSubtaskById(3);
@@ -305,7 +330,7 @@ public class Main {
         System.out.println(isEqual());
     }
 
-    public static boolean isEqual(){
+    public static boolean isEqual() {
         return fileBackedTaskManager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"));
     }
 
@@ -321,6 +346,7 @@ public class Main {
         System.out.println("7 - обновить задачу по ID");
         System.out.println("8 - удалить задачи");
         System.out.println("9 - история просмотров");
+        System.out.println("10 - список задач по приоритету");
         System.out.println("0 - выход из программы.");
     }
 }

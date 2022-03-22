@@ -1,10 +1,15 @@
 package tasks;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class Subtask extends Task {
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private int belonging;
 
-    public Subtask(int belonging, String name, int id, Status status) {
-        super(name, id, status);
+    public Subtask(int belonging, String name, int id, Status status, Duration duration, LocalDateTime startTime) {
+        super(name, id, status, duration, startTime);
         this.belonging = belonging;
     }
 
@@ -21,7 +26,8 @@ public class Subtask extends Task {
     @Override
     public String toString() {
         return this.getId() + "," + Type.SUBTASK + "," +
-                this.getName() + "," + this.getStatus() + "," + this.getBelonging() + "\n";
+                this.getName() + "," + this.getStatus() + "," + this.getBelonging() + "," + this.getDuration() + "," +
+                this.getStartTime().format(formatter) + "\n";
     }
 
     public int getBelonging() {
