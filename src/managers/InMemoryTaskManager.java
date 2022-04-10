@@ -5,6 +5,7 @@ import tasks.Subtask;
 import tasks.Task;
 import utilities.HistoryManager;
 import utilities.Managers;
+import utilities.Response;
 
 import java.util.*;
 
@@ -48,8 +49,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Epic> getEpics() {
-        return epics;
+    public List<Task> getEpics() {
+        return new ArrayList<>(epics);
     }
 
     @Override
@@ -86,8 +87,8 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public List<Subtask> showAllSubtasksList() {
-        List<Subtask> subtasks = new ArrayList<>();
+    public List<Task> showAllSubtasksList() {
+        List<Task> subtasks = new ArrayList<>();
         for (Epic epic : epics) {
             subtasks.addAll(epic.getSubtasks());
         }
@@ -224,10 +225,11 @@ public class InMemoryTaskManager implements TaskManager {
         epics.clear();
         tasks.clear();
         inMemoryHistoryManager.clearHistory();
+        prioritizedTasks.clear();
     }
 
     @Override
-    public String deleteSubtask(int id) {
+    public Response deleteSubtask(int id) {
         Subtask target = null;
         Epic targetEpic = null;
         for (Epic epic : epics) {
@@ -242,14 +244,15 @@ public class InMemoryTaskManager implements TaskManager {
         if (target != null) {
             targetEpic.deleteSubtask(target);
         } else {
-            return "Подзадача с таким ID не найдена!";
+            return Response.NOT_FOUND;
         }
         inMemoryHistoryManager.remove(id);
-        return "Задача удалена!";
+        prioritizedTasks.remove(target);
+        return Response.SUCCESS;
     }
 
     @Override
-    public String deleteEpic(int id) {
+    public Response deleteEpic(int id) {
         Epic target = null;
         for (Epic epic : epics) {
             if (epic.getId() == id) {
@@ -260,17 +263,18 @@ public class InMemoryTaskManager implements TaskManager {
         if (target != null) {
             epics.remove(target);
             inMemoryHistoryManager.remove(id);
+            prioritizedTasks.remove(target);
             for (Subtask subtask : target.getSubtasks()) {
                 inMemoryHistoryManager.remove(subtask.getId());
             }
         } else {
-            return "Задача с таким ID не найдена!";
+            return Response.NOT_FOUND;
         }
-        return "Задача удалена!";
+        return Response.SUCCESS;
     }
 
     @Override
-    public String deleteTask(int id) {
+    public Response deleteTask(int id) {
         Task target = null;
         for (Task task : tasks) {
             if (task.getId() == id) {
@@ -282,9 +286,9 @@ public class InMemoryTaskManager implements TaskManager {
             tasks.remove(target);
             inMemoryHistoryManager.remove(id);
         } else {
-            return "Задача с таким ID не найдена!";
+            return Response.NOT_FOUND;
         }
-        return "Задача удалена!";
+        return Response.SUCCESS;
     }
 
     @Override
@@ -308,6 +312,7 @@ public class InMemoryTaskManager implements TaskManager {
         return inMemoryHistoryManager;
     }
 
+    @Override
     public Map<Task, String> getPrioritizedTasks() {
         return prioritizedTasks;
     }

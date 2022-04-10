@@ -1,12 +1,16 @@
 package main;
 
-import managers.FileBackedTaskManager;
+import managers.TaskManager;
+import server.HttpTaskServer;
+import server.KVServer;
+import server.KVTaskClient;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 import utilities.Creator;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -16,13 +20,25 @@ import java.util.Scanner;
 
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
-    private static FileBackedTaskManager fileBackedTaskManager = FileBackedTaskManager.loadFromFile("tasks.csv");
+    private static TaskManager manager;
     private static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     private static Creator creator;
+    private static KVTaskClient client;
+    private static KVServer server;
+    private static HttpTaskServer taskServer;
 
     public static void main(String[] args) {
-        creator = new Creator(fileBackedTaskManager.getMaxIdFromFile());
+        try {
+            server = new KVServer();
+            server.start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        taskServer = new HttpTaskServer();
+        manager = taskServer.getManager();
+        creator = new Creator();
         loop:
         while (true) {
             printMenu();
@@ -77,21 +93,21 @@ public class Main {
         System.out.println("3 - простая задача");
         int type = scanner.nextInt();
         if (type == 1) {
-            fileBackedTaskManager.addEpic(creator.createEpic());
+            manager.addEpic(creator.createEpic());
         } else if (type == 2) {
-            fileBackedTaskManager.addSubtask(creator.createSubtask());
+            manager.addSubtask(creator.createSubtask());
         } else if (type == 3) {
-            fileBackedTaskManager.addTask(creator.createTask());
+            manager.addTask(creator.createTask());
         } else {
             System.out.println("Такой команды нет.");
         }
     }
 
     public static void showAllSubtasks() {
-        List<Subtask> subtasks = fileBackedTaskManager.showAllSubtasksList();
+        List<Task> subtasks = manager.showAllSubtasksList();
         System.out.println("Список всех подзадач.");
         System.out.println("_____________________");
-        for (Subtask sub : subtasks) {
+        for (Task sub : subtasks) {
             System.out.println("Название подзадачи: " + sub.getName() + ". Статус: " + sub.getStatus()
                     + ". (ID " + sub.getId() + ")");
         }
@@ -99,10 +115,10 @@ public class Main {
     }
 
     public static void showAllEpics() {
-        List<Epic> epics = fileBackedTaskManager.getEpics();
+        List<Task> epics = manager.getEpics();
         System.out.println("Список всех эпиков.");
         System.out.println("___________________");
-        for (Epic epic : epics) {
+        for (Task epic : epics) {
             System.out.println("Название эпика: " + epic.getName() + ". Статус: "
                     + epic.getStatus()
                     + ". (ID " + epic.getId() + ")");
@@ -111,7 +127,7 @@ public class Main {
     }
 
     public static void showAllTasks() {
-        List<Task> tasks = fileBackedTaskManager.getTasks();
+        List<Task> tasks = manager.getTasks();
         System.out.println("Список всех простых задач.");
         System.out.println("___________________________");
         for (Task task : tasks) {
@@ -127,7 +143,7 @@ public class Main {
         int epicID = scanner.nextInt();
         System.out.println("Получить все подзадачи эпика " + epicID + ".");
         System.out.println("__________________________________________");
-        for (Subtask subtask : fileBackedTaskManager.showSubtasksFromEpic(epicID)) {
+        for (Subtask subtask : manager.showSubtasksFromEpic(epicID)) {
             System.out.println(subtask.getName());
         }
         System.out.println("__________________________________");
@@ -145,7 +161,7 @@ public class Main {
                 System.out.println("Введите ID эпика:");
                 result = scanner.nextInt();
                 try {
-                    System.out.println(fileBackedTaskManager.getEpicById(result).getName());
+                    System.out.println(manager.getEpicById(result).getName());
                 } catch (NullPointerException e) {
                     System.out.println("Задача с таким id не найдена!\n");
                 }
@@ -154,7 +170,7 @@ public class Main {
                 System.out.println("Введите ID подзадачи");
                 result = scanner.nextInt();
                 try {
-                    System.out.println(fileBackedTaskManager.getSubtaskById(result).getName());
+                    System.out.println(manager.getSubtaskById(result).getName());
                 } catch (NullPointerException e) {
                     System.out.println("Задача с таким id не найдена!\n");
                 }
@@ -163,7 +179,7 @@ public class Main {
                 System.out.println("Введите ID простой задачи.");
                 result = scanner.nextInt();
                 try {
-                    System.out.println(fileBackedTaskManager.getTaskById(result).getName());
+                    System.out.println(manager.getTaskById(result).getName());
                 } catch (NullPointerException e) {
                     System.out.println("Задача с таким id не найдена!\n");
                 }
@@ -184,21 +200,21 @@ public class Main {
                 System.out.println("Введите ID эпика.");
                 int id = scanner.nextInt();
                 Epic epic = creator.createEpic();
-                System.out.println(fileBackedTaskManager.updateEpic(epic, id));
+                System.out.println(manager.updateEpic(epic, id));
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи.");
                 id = scanner.nextInt();
                 Subtask subtask = creator.createSubtask();
                 subtask.setStatus(chooseStatus());
-                System.out.println(fileBackedTaskManager.updateSubtask(subtask, id));
+                System.out.println(manager.updateSubtask(subtask, id));
                 break;
             case 3:
                 System.out.println("Введите ID простой задачи.");
                 id = scanner.nextInt();
                 Task task = creator.createTask();
                 task.setStatus(chooseStatus());
-                System.out.println(fileBackedTaskManager.updateTask(task, id));
+                System.out.println(manager.updateTask(task, id));
                 break;
             default:
                 System.out.println("Такой команды нет");
@@ -215,22 +231,22 @@ public class Main {
         int newCommand = scanner.nextInt();
         switch (newCommand) {
             case 1:
-                fileBackedTaskManager.deleteAllTasks();
+                manager.deleteAllTasks();
                 break;
             case 2:
                 System.out.println("Введите ID подзадачи:");
                 int id = scanner.nextInt();
-                System.out.println(fileBackedTaskManager.deleteSubtask(id));
+                System.out.println(manager.deleteSubtask(id));
                 break;
             case 3:
                 System.out.println("Введите ID эпика");
                 id = scanner.nextInt();
-                fileBackedTaskManager.deleteEpic(id);
+                manager.deleteEpic(id);
                 break;
             case 4:
                 System.out.println("Введите ID простой задачи.");
                 id = scanner.nextInt();
-                fileBackedTaskManager.deleteTask(id);
+                manager.deleteTask(id);
                 break;
             default:
                 System.out.println("Такой команды нет.");
@@ -240,7 +256,7 @@ public class Main {
     public static void showHistory() {
         System.out.println("История");
         System.out.println("___________________");
-        for (Task task : fileBackedTaskManager.showHistory()) {
+        for (Task task : manager.showHistory()) {
             System.out.println(task.getName());
         }
         System.out.println("___________________");
@@ -268,71 +284,72 @@ public class Main {
     }
 
     public static void getPrioritizedTasks() {
-        for(Map.Entry<Task, String> entry: fileBackedTaskManager.getPrioritizedTasks().entrySet()) {
+        for (Map.Entry<Task, String> entry : manager.getPrioritizedTasks().entrySet()) {
             System.out.println(entry.getKey().getStartTime().format(formatter) + " " + entry.getValue());
         }
     }
 
     public static void exit() {
-        fileBackedTaskManager.save();
+        server.stop();
+        taskServer.stop();
     }
 
     public static void test() {
-        fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW,
+        manager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
+        manager.addSubtask(new Subtask("найти кошку", 1, 2, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 00:00", formatter)));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW,
+        manager.addSubtask(new Subtask("открыть корм", 1, 3, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 01:00", formatter)));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW,
+        manager.addSubtask(new Subtask("насыпать корм в миску", 1, 4, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 02:00", formatter)));
-        fileBackedTaskManager.addEpic(new Epic("Второй эпик", "другое описание", 5, Status.NEW));
-        fileBackedTaskManager.addTask(new Task("простая задача", 6, Status.NEW, Duration.ofHours(1),
+        manager.addEpic(new Epic("Второй эпик", "другое описание", 5, Status.NEW));
+        manager.addTask(new Task("простая задача", 6, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("22.03.2022 03:00", formatter)));
         showAllSubtasks();
         showAllEpics();
         showAllTasks();
-        for (Subtask subtask : fileBackedTaskManager.showSubtasksFromEpic(1)) {
+        for (Subtask subtask : manager.showSubtasksFromEpic(1)) {
             System.out.println(subtask);
         }
-        fileBackedTaskManager.getEpicById(1);
+        manager.getEpicById(1);
         showHistory();
-        fileBackedTaskManager.getSubtaskById(2);
-        fileBackedTaskManager.getSubtaskById(3);
-        fileBackedTaskManager.getSubtaskById(4);
+        manager.getSubtaskById(2);
+        manager.getSubtaskById(3);
+        manager.getSubtaskById(4);
         showHistory();
-        fileBackedTaskManager.deleteEpic(1);
+        manager.deleteEpic(1);
         showHistory();
-        fileBackedTaskManager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "найти кошку", 2, Status.NEW,
+        manager.addEpic(new Epic("Покормить кошку", "описание", 1, Status.NEW));
+        manager.addSubtask(new Subtask("найти кошку", 1, 2, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 00:00", formatter)));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "открыть корм", 3, Status.NEW,
+        manager.addSubtask(new Subtask("открыть корм", 1, 3, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 01:00", formatter)));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "насыпать корм в миску", 4, Status.NEW,
+        manager.addSubtask(new Subtask("насыпать корм в миску", 1, 4, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("22.03.2022 02:00", formatter)));
-        fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "найти кошку", 2, Status.IN_PROGRESS, Duration.ofHours(1),
+        manager.updateSubtask(
+                new Subtask("найти кошку", 1, 2, Status.IN_PROGRESS, Duration.ofHours(1),
                         LocalDateTime.parse("22.03.2022 00:00", formatter)), 2);
-        System.out.println(fileBackedTaskManager.getEpicById(1));
-        fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "найти кошку", 2, Status.DONE, Duration.ofHours(1),
+        System.out.println(manager.getEpicById(1));
+        manager.updateSubtask(
+                new Subtask("найти кошку", 1, 2, Status.DONE, Duration.ofHours(1),
                         LocalDateTime.parse("22.03.2022 00:00", formatter)), 2);
-        fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "открыть корм", 3, Status.DONE, Duration.ofHours(1),
+        manager.updateSubtask(
+                new Subtask("открыть корм", 1, 3, Status.DONE, Duration.ofHours(1),
                         LocalDateTime.parse("22.03.2022 01:00", formatter)), 3);
-        fileBackedTaskManager.updateSubtask(
-                new Subtask(1, "насыпать корм в миску", 4, Status.DONE, Duration.ofHours(1),
+        manager.updateSubtask(
+                new Subtask("насыпать корм в миску", 1, 4, Status.DONE, Duration.ofHours(1),
                         LocalDateTime.parse("22.03.2022 02:00", formatter)), 4);
-        System.out.println(fileBackedTaskManager.getEpicById(1));
-        fileBackedTaskManager.getSubtaskById(2);
-        fileBackedTaskManager.getSubtaskById(3);
-        fileBackedTaskManager.getSubtaskById(4);
+        System.out.println(manager.getEpicById(1));
+        manager.getSubtaskById(2);
+        manager.getSubtaskById(3);
+        manager.getSubtaskById(4);
         showHistory();
-        System.out.println(isEqual());
+        //System.out.println(isEqual());
     }
 
-    public static boolean isEqual() {
-        return fileBackedTaskManager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"));
-    }
+//    public static boolean isEqual() {
+//        return manager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"));
+//    }
 
     public static void printMenu() {
         System.out.println("Что вы хотите сделать?");

@@ -30,9 +30,9 @@ class HistoryManagerTest {
         epic = new Epic("feed the cat", "description", 1, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 00:00", formatter),
                 LocalDateTime.parse("21.03.2022 01:00", formatter));
-        subtask = new Subtask(1, "find the cat", 2, Status.NEW, Duration.ofHours(1),
+        subtask = new Subtask("find the cat", 1, 2, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.02.2022 02:00", formatter));
-        subtask1 = new Subtask(1, "open pack of food", 3, Status.NEW, Duration.ofHours(1),
+        subtask1 = new Subtask("open pack of food", 1, 3, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.02.2022 04:00", formatter));
         task = new Task("simple task", 4, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 06:00", formatter));

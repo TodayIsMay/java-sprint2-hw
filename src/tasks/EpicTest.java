@@ -29,33 +29,33 @@ class EpicTest {
 
     @Test
     public void shouldBeNewWhenAllSubtasksAreNew() {
-        epic.addSub(new Subtask(1, "find the cat", 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "open food pack", 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "put food in a bowl", 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("find the cat", 1, 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("open food pack", 1, 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("put food in a bowl", 1, 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
         assertEquals(Status.NEW.toString(), epic.getStatus().toString());
     }
 
     @Test
     public void shouldBeDoneWhenAllSubtasksAreDone() {
-        epic.addSub(new Subtask(1, "find the cat", 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "open food pack", 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "put food in a bowl", 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("find the cat", 1, 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("open food pack", 1, 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("put food in a bowl", 1, 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
         assertEquals(Status.DONE.toString(), epic.getStatus().toString());
     }
 
     @Test
     public void shouldBeInProgressWhenSubtasksAreNewAndDone() {
-        epic.addSub(new Subtask(1, "find the cat", 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "open food pack", 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "put food in a bowl", 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("find the cat", 1, 1, Status.DONE, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("open food pack", 1, 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("put food in a bowl", 1, 1, Status.NEW, Duration.ofHours(1), LocalDateTime.now()));
         assertEquals(Status.IN_PROGRESS.toString(), epic.getStatus().toString());
     }
 
     @Test
     public void shouldBeInProgressWhenAllSubtasksAreInProgress() {
-        epic.addSub(new Subtask(1, "find the cat", 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "open food pack", 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
-        epic.addSub(new Subtask(1, "put food in a bowl", 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("find the cat", 1, 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("open food pack", 1, 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
+        epic.addSub(new Subtask("put food in a bowl", 1, 1, Status.IN_PROGRESS, Duration.ofHours(1), LocalDateTime.now()));
         assertEquals(Status.IN_PROGRESS.toString(), epic.getStatus().toString());
     }
 

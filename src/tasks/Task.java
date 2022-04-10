@@ -70,7 +70,7 @@ public class Task {
             int belonging = Integer.parseInt(valueArr[4]);
             Duration duration = Duration.ofHours(Long.parseLong(valueArr[5]));
             LocalDateTime startTime = LocalDateTime.parse(valueArr[6], startTimeFormatter);
-            task = new Subtask(belonging, name, id, status, duration, startTime);
+            task = new Subtask(name, belonging, id, status, duration, startTime);
         } else if (valueArr[1].equals(Type.TASK.toString())) {
             Duration duration = Duration.ofMillis(Long.parseLong(valueArr[4]) * 3600000);
             LocalDateTime startTime = LocalDateTime.parse(valueArr[5], startTimeFormatter);

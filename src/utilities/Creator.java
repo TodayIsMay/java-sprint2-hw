@@ -20,6 +20,8 @@ public class Creator {
         this.maxId = maxId;
     }
 
+    public Creator(){}
+
     public Epic createEpic() {
         System.out.println("Введите название эпика");
         String name = scanner.nextLine();
@@ -46,7 +48,7 @@ public class Creator {
         }catch (DateTimeParseException e) {
             System.out.println("Неверный формат времени и/или даты!");
         }
-        return new Subtask(belonging, name, ID, status, duration, startTime);
+        return new Subtask(name, belonging, ID, status, duration, startTime);
     }
 
     public Task createTask() {

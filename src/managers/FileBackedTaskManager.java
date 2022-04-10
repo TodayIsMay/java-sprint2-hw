@@ -3,6 +3,7 @@ package managers;
 import exceptions.ManagerSaveException;
 import tasks.*;
 import utilities.HistoryManager;
+import utilities.Response;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -11,6 +12,10 @@ import java.util.*;
 public class FileBackedTaskManager extends InMemoryTaskManager {
     private static int maxIdFromFile = 0;
     private String file;
+
+    public FileBackedTaskManager() {
+        super();
+    }
 
     public FileBackedTaskManager(String file) {
         super();
@@ -65,9 +70,10 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
 
     public void save() {
         try (FileWriter out = new FileWriter(file, StandardCharsets.UTF_8)) {
-            for (Epic epic : getEpics()) {
+            for (Task epic : getEpics()) {
+                Epic ep = (Epic) epic;
                 out.write(epic.toString());
-                for (Subtask subtask : epic.getSubtasks()) {
+                for (Subtask subtask : ep.getSubtasks()) {
                     out.write(subtask.toString());
                 }
             }
@@ -141,23 +147,29 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
-    public String deleteSubtask(int id) {
-        String result = super.deleteSubtask(id);
-        save();
+    public Response deleteSubtask(int id) {
+        Response result = super.deleteSubtask(id);
+        if (result.equals(Response.SUCCESS)) {
+            save();
+        }
         return result;
     }
 
     @Override
-    public String deleteEpic(int id) {
-        String result = super.deleteEpic(id);
-        save();
+    public Response deleteEpic(int id) {
+        Response result = super.deleteEpic(id);
+        if (result.equals(Response.SUCCESS)) {
+            save();
+        }
         return result;
     }
 
     @Override
-    public String deleteTask(int id) {
-        String result = super.deleteTask(id);
-        save();
+    public Response deleteTask(int id) {
+        Response result = super.deleteTask(id);
+        if (result.equals(Response.SUCCESS)) {
+            save();
+        }
         return result;
     }
 
@@ -178,7 +190,9 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     @Override
     public Task getTaskById(int id) {
         Task task = super.getTaskById(id);
-        save();
+        if (task != null) {
+            save();
+        }
         return task;
     }
 
@@ -209,11 +223,13 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         List<Subtask> oSubtasks = new ArrayList<>();
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        for (Epic epic : this.getEpics()) {
-            thisSubtasks.addAll(epic.getSubtasks());
+        for (Task epic : this.getEpics()) {
+            Epic ep = (Epic) epic;
+            thisSubtasks.addAll(ep.getSubtasks());
         }
-        for (Epic epic : ((FileBackedTaskManager) o).getEpics()) {
-            oSubtasks.addAll(epic.getSubtasks());
+        for (Task epic : ((FileBackedTaskManager) o).getEpics()) {
+            Epic ep = (Epic) epic;
+            oSubtasks.addAll(ep.getSubtasks());
         }
         if (!this.getTasks().equals(((FileBackedTaskManager) o).getTasks()) &&
                 !this.getEpics().equals(((FileBackedTaskManager) o).getEpics()) &&

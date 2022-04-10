@@ -3,13 +3,15 @@ package managers;
 import tasks.Epic;
 import tasks.Subtask;
 import tasks.Task;
+import utilities.Response;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TaskManager {
     List<Task> getTasks();
 
-    List<Epic> getEpics();
+    List<Task> getEpics();
 
     void addEpic(Epic epic);
 
@@ -17,7 +19,7 @@ public interface TaskManager {
 
     void addTask(Task task);
 
-    List <Subtask> showAllSubtasksList();
+    List <Task> showAllSubtasksList();
 
     List<Subtask> showSubtasksFromEpic(int id);
 
@@ -35,13 +37,15 @@ public interface TaskManager {
 
     void deleteAllTasks();
 
-    String deleteSubtask(int id);
+    Response deleteSubtask(int id);
 
-    String deleteEpic(int id);
+    Response deleteEpic(int id);
 
-    String deleteTask(int id);
+    Response deleteTask(int id);
 
     List<Task> showHistory();
 
     boolean doesIntersect(Task targetTask);
+
+    Map<Task, String> getPrioritizedTasks();
 }

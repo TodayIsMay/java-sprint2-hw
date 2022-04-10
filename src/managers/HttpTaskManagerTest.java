@@ -1,14 +1,18 @@
 package managers;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import server.HttpTaskServer;
+import server.KVServer;
 import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 import utilities.Response;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -17,21 +21,27 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+class HttpTaskManagerTest{
+    private KVServer kvServer;
+    private HttpTaskServer server;
+    private HttpTaskManager taskManager;
 
-abstract class TaskManagerTest<T extends TaskManager> {
-    TaskManager taskManager;
     private Epic epic;
     private Subtask subtask;
     private Subtask subtask1;
     private Task task;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
-    public TaskManagerTest(TaskManager taskManager) {
-        this.taskManager = taskManager;
-    }
-
     @BeforeEach
-    public void createTasks() {
+    public void startServer() {
+        try {
+            kvServer = new KVServer();
+            kvServer.start();
+            server = new HttpTaskServer();
+            taskManager = new HttpTaskManager("http://localhost:8078");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         epic = new Epic("feed the cat", "description", 1, Status.NEW);
         subtask = new Subtask("find the cat", 1, 2, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.02.2022 02:00", formatter));
@@ -39,6 +49,12 @@ abstract class TaskManagerTest<T extends TaskManager> {
                 LocalDateTime.parse("21.02.2022 04:00", formatter));
         task = new Task("simple task", 5, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 06:00", formatter));
+    }
+
+    @AfterEach
+    public void stopServer() {
+        kvServer.stop();
+        server.stop();
     }
 
     @Test
@@ -290,4 +306,5 @@ abstract class TaskManagerTest<T extends TaskManager> {
         Assertions.assertFalse(taskManager.doesIntersect(new Task("new task", 0, Status.NEW,
                 Duration.ofHours(1), LocalDateTime.parse("21.03.2022 07:00", formatter))));
     }
+
 }

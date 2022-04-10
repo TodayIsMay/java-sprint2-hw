@@ -5,10 +5,9 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Subtask extends Task {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private int belonging;
 
-    public Subtask(int belonging, String name, int id, Status status, Duration duration, LocalDateTime startTime) {
+    public Subtask(String name, int belonging, int id, Status status, Duration duration, LocalDateTime startTime) {
         super(name, id, status, duration, startTime);
         this.belonging = belonging;
     }
@@ -25,6 +24,7 @@ public class Subtask extends Task {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         return this.getId() + "," + Type.SUBTASK + "," +
                 this.getName() + "," + this.getStatus() + "," + this.getBelonging() + "," + this.getDuration() + "," +
                 this.getStartTime().format(formatter) + "\n";

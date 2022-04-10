@@ -36,7 +36,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
     @Test
     public void shouldReturnFileBackedTaskManagerWhenEmptyHistory() {
         fileBackedTaskManager.addEpic(new Epic("Feed the cat", "description", 1, Status.NEW));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "find the cat", 2, Status.NEW,
+        fileBackedTaskManager.addSubtask(new Subtask("find the cat", 1, 2, Status.NEW,
                 Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 02:00", formatter)));
         fileBackedTaskManager.addTask(new Task("task", 3, Status.NEW, Duration.ofHours(1),
@@ -51,7 +51,7 @@ class FileBackedTaskManagerTest extends TaskManagerTest<FileBackedTaskManager> {
                 Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 00:00", formatter),
                 LocalDateTime.parse("21.03.2022 01:00", formatter)));
-        fileBackedTaskManager.addSubtask(new Subtask(1, "find the cat", 2, Status.NEW,
+        fileBackedTaskManager.addSubtask(new Subtask("find the cat", 1, 2, Status.NEW,
                 Duration.ofHours(1),
                 LocalDateTime.parse("21.03.2022 09:00", formatter)));
         fileBackedTaskManager.addTask(new Task("task", 3, Status.NEW, Duration.ofHours(1),

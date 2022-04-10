@@ -7,9 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Epic extends Task {
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
     private String description;
-    private List<Subtask> subtasks;
+    private List<Subtask> subtasks = new ArrayList<>();
     Duration duration;
     LocalDateTime startTime;
     LocalDateTime endTime;
@@ -18,7 +17,7 @@ public class Epic extends Task {
                 LocalDateTime endTime) {
         super(name, id, status);
         this.description = description;
-        this.subtasks = new ArrayList<>();
+        //this.subtasks = new ArrayList<>();
         this.duration = duration;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -117,6 +116,7 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
         if(startTime == null | endTime == null | duration == null) {
             return this.getId() + "," + Type.EPIC + "," +
                     this.getName() + "," + this.getStatus() + "," + this.getDescription() + "\n";
