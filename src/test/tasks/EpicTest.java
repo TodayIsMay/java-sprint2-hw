@@ -20,11 +20,11 @@ class EpicTest {
     @BeforeEach
     public void create() {
         epic = new Epic("feed the cat", "description", 1, Status.NEW);
-        subtask = new Subtask(1, "find the cat", 1, Status.NEW, Duration.ofHours(1),
+        subtask = new Subtask("find the cat", 1, 1, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.now());
-        subtask1 = new Subtask(1, "open food pack", 1, Status.NEW, Duration.ofHours(1),
+        subtask1 = new Subtask("open food pack", 1, 1, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.now());
-        subtask2 = new Subtask(1, "put food in a bowl", 1, Status.NEW, Duration.ofHours(1),
+        subtask2 = new Subtask("put food in a bowl", 1, 1, Status.NEW, Duration.ofHours(1),
                 LocalDateTime.now());
     }
 

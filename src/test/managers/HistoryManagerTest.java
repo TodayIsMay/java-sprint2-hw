@@ -1,4 +1,4 @@
-package utilities;
+package test.managers;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,8 @@ import tasks.Epic;
 import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
+import utilities.HistoryManager;
+import utilities.InMemoryHistoryManager;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
