@@ -1,5 +1,6 @@
-package managers;
+package test.managers;
 
+import managers.TaskManager;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
