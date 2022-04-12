@@ -3,25 +3,17 @@ package server;
 import com.sun.net.httpserver.HttpServer;
 import managers.TaskManager;
 import tasks.Epic;
-import tasks.Status;
 import tasks.Subtask;
 import tasks.Task;
 import utilities.Managers;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.time.Duration;
-import java.time.LocalDateTime;
 
 public class HttpTaskServer {
-    TaskManager manager = Managers.getDefault();
-    HttpServer server;
+    private TaskManager manager = Managers.getDefault();
+    private HttpServer server;
     public HttpTaskServer() {
-        //manager.addEpic(new Epic("Feed the cat", "description", 5, Status.NEW));
-        //manager.addSubtask(new Subtask("find the  cat", 5, 6, Status.NEW, Duration.ofMillis(20000), LocalDateTime.of(2022, 5, 2, 0, 0)));
-        //manager.addTask(new Task("task", 1, Status.NEW, Duration.ofMillis(7000), LocalDateTime.now()));
-        //manager.addTask(new Task("second task", 2, Status.NEW, Duration.ofMillis(20000), LocalDateTime.of(2022, 5, 1, 0, 0)));
-        //manager.addTask(new Task("third task", 3, Status.NEW, Duration.ofMillis(20000), LocalDateTime.of(2022, 4, 15, 0, 0)));
         try {
             server = HttpServer.create();
             server.bind(new InetSocketAddress(8080), 0);
@@ -43,5 +35,13 @@ public class HttpTaskServer {
 
     public TaskManager getManager() {
         return manager;
+    }
+
+    public HttpServer getServer() {
+        return server;
+    }
+
+    public void setServer(HttpServer server) {
+        this.server = server;
     }
 }

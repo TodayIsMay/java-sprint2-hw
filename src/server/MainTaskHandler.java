@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managers.TaskManager;
-import tasks.Subtask;
 import tasks.Task;
 import utilities.DurationAdapter;
 import utilities.LocalDateTimeAdapter;
@@ -21,7 +20,7 @@ import java.time.LocalDateTime;
  * <p>DELETE /tasks/ -- deletes all tasks</p>
  */
 public class MainTaskHandler implements HttpHandler {
-    TaskManager manager;
+    private TaskManager manager;
 
     public MainTaskHandler(TaskManager manager) {
         this.manager = manager;
@@ -32,20 +31,18 @@ public class MainTaskHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         String response = "";
         GsonBuilder gsonBuilder = new GsonBuilder()
-                //.registerTypeAdapter(Task.class, new TaskAdapter())
-                //.registerTypeAdapter(Subtask.class, new SubtaskAdapter());
                 .registerTypeAdapter(Duration.class, new DurationAdapter())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
         Gson gson = gsonBuilder.create();
         switch (method) {
             case "GET":
-            StringBuilder builder = new StringBuilder();
-            for(Task task : manager.getPrioritizedTasks().keySet()) {
-                builder.append(gson.toJson(task)).append("\n");
-            }
-            response = builder.toString();
-            exchange.sendResponseHeaders(200, 0);
-            break;
+                StringBuilder builder = new StringBuilder();
+                for (Task task : manager.getPrioritizedTasks().keySet()) {
+                    builder.append(gson.toJson(task)).append("\n");
+                }
+                response = builder.toString();
+                exchange.sendResponseHeaders(200, 0);
+                break;
             case "DELETE":
                 manager.deleteAllTasks();
                 exchange.sendResponseHeaders(200, 0);
@@ -57,5 +54,13 @@ public class MainTaskHandler implements HttpHandler {
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(response.getBytes());
         }
+    }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TaskManager manager) {
+        this.manager = manager;
     }
 }

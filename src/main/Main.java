@@ -344,12 +344,7 @@ public class Main {
         manager.getSubtaskById(3);
         manager.getSubtaskById(4);
         showHistory();
-        //System.out.println(isEqual());
     }
-
-//    public static boolean isEqual() {
-//        return manager.equals(FileBackedTaskManager.loadFromFile("tasks.csv"));
-//    }
 
     public static void printMenu() {
         System.out.println("Что вы хотите сделать?");

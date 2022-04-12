@@ -11,9 +11,9 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
 public class KVTaskClient {
-    URI url;
-    private static String API_KEY = null;
-    HttpClient client;
+    private URI url;
+    private String apiKey;
+    private HttpClient client;
 
     public KVTaskClient(URI url) {
         this.url = url;
@@ -30,11 +30,11 @@ public class KVTaskClient {
             JsonElement element = parser.parse(response.body());
             if(element.isJsonObject()) {
                 JsonObject jsonObject = element.getAsJsonObject();
-                API_KEY = jsonObject.getAsString();
-                System.out.println(API_KEY);
+                apiKey = jsonObject.getAsString();
+                System.out.println(apiKey);
             } else {
-                API_KEY = element.getAsString();
-                System.out.println("API_KEY: " + API_KEY);
+                apiKey = element.getAsString();
+                System.out.println("API_KEY: " + apiKey);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -42,7 +42,7 @@ public class KVTaskClient {
     }
 
     public void put(String key, String json) {
-        URI put = URI.create(url + "/save/" + key + "?API_KEY=" + API_KEY);
+        URI put = URI.create(url + "/save/" + key + "?API_KEY=" + apiKey);
         HttpRequest.BodyPublisher body = HttpRequest.BodyPublishers.ofString(json);
         HttpRequest putRequest = HttpRequest.newBuilder()
                 .uri(put)
@@ -57,7 +57,7 @@ public class KVTaskClient {
     }
 
     public String load(String key) {
-        URI get = URI.create(url + "/load/" + key + "?API_KEY=" + API_KEY);
+        URI get = URI.create(url + "/load/" + key + "?API_KEY=" + apiKey);
         HttpRequest getRequest = HttpRequest.newBuilder()
                 .uri(get)
                 .GET()
@@ -70,6 +70,30 @@ public class KVTaskClient {
             e.printStackTrace();
         }
         return response;
+    }
+
+    public URI getUrl() {
+        return url;
+    }
+
+    public void setUrl(URI url) {
+        this.url = url;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public HttpClient getClient() {
+        return client;
+    }
+
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
 }
 

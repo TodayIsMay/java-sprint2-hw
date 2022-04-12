@@ -5,7 +5,6 @@ import tasks.Epic;
 import tasks.Subtask;
 
 import java.lang.reflect.Type;
-import java.time.Duration;
 
 public class EpicSerializer implements JsonSerializer<Epic> {
     @Override
@@ -17,15 +16,14 @@ public class EpicSerializer implements JsonSerializer<Epic> {
         result.addProperty("status", epic.getStatus().toString());
         JsonArray subtasks = new JsonArray();
         result.add("subtasks", subtasks);
-        for(Subtask subtask : epic.getSubtasks()) {
+        for (Subtask subtask : epic.getSubtasks()) {
             subtasks.add(jsonSerializationContext.serialize(subtask));
         }
-        if(subtasks.size() != 0) {
+        if (subtasks.size() != 0) {
             result.add("duration", jsonSerializationContext.serialize(epic.getDuration()));
             result.add("start_time", jsonSerializationContext.serialize(epic.getStartTime()));
             result.add("end_time", jsonSerializationContext.serialize(epic.getEndTime()));
         }
-
         return result;
     }
 }

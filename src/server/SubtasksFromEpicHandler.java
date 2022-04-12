@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
  * <p>- GET /tasks/subtask/epic/{id} -- shows all subtasks from a particular epic</p>
  */
 public class SubtasksFromEpicHandler implements HttpHandler {
-    TaskManager manager;
+    private TaskManager manager;
 
     public SubtasksFromEpicHandler(TaskManager manager) {
         this.manager = manager;
@@ -37,7 +37,7 @@ public class SubtasksFromEpicHandler implements HttpHandler {
         String method = exchange.getRequestMethod();
         switch (method) {
             case "GET":
-                if(hasParams(exchange.getRequestURI().toString())) {
+                if (hasParams(exchange.getRequestURI().toString())) {
                     int id = extractId(exchange.getRequestURI().toString());
                     StringBuilder stringBuilder = new StringBuilder();
                     for (Subtask subtask : manager.showSubtasksFromEpic(id)) {
@@ -59,7 +59,7 @@ public class SubtasksFromEpicHandler implements HttpHandler {
                         exchange.getRequestMethod());
                 exchange.sendResponseHeaders(401, 0);
         }
-        try(OutputStream os = exchange.getResponseBody()) {
+        try (OutputStream os = exchange.getResponseBody()) {
             os.write(response.getBytes());
         }
     }
@@ -70,5 +70,13 @@ public class SubtasksFromEpicHandler implements HttpHandler {
 
     private int extractId(String uri) {
         return Integer.parseInt(uri.split("/")[4]);
+    }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TaskManager manager) {
+        this.manager = manager;
     }
 }

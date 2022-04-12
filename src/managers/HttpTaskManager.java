@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class HttpTaskManager extends FileBackedTaskManager{
-    String url;
-    KVTaskClient kvTaskClient;
+    private String url;
+    private KVTaskClient kvTaskClient;
 
     public HttpTaskManager(String url) {
         this.url = url;

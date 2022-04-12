@@ -19,9 +19,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//public class EpicHandler extends TaskHandler<Epic>{
-//TaskManager manager;
-
 public class EpicHandler<T extends Task> implements HttpHandler {
     private TaskManager manager;
     private Class<T> tClass;
@@ -40,7 +37,6 @@ public class EpicHandler<T extends Task> implements HttpHandler {
                 .registerTypeAdapter(Epic.class, new EpicDeserializer())
                 .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
                 .registerTypeAdapter(Duration.class, new DurationAdapter());
-        //.registerTypeAdapter(tClass, adapter);
         Gson gson = gsonBuilder.create();
         String method = exchange.getRequestMethod();
         String requestUri = exchange.getRequestURI().toString();
@@ -149,33 +145,20 @@ public class EpicHandler<T extends Task> implements HttpHandler {
     Response deleteTask(int id) {
         return manager.deleteEpic(id);
     }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TaskManager manager) {
+        this.manager = manager;
+    }
+
+    public Class<T> getTClass() {
+        return tClass;
+    }
+
+    public void setTClass(Class<T> tClass) {
+        this.tClass = tClass;
+    }
 }
-//    public EpicHandler(TaskManager manager, Class<Epic> epicClass) {
-//        super(manager, epicClass);
-//        this.manager = manager;
-//    }
-//
-//    @Override
-//    Task getTaskById(int id) {
-//        return manager.getEpicById(id);
-//    }
-//
-//    @Override
-//    List<Task> getTasks() {
-//        return manager.getEpics();
-//    }
-//
-//    @Override
-//    void updateTask(Task task, int id) {
-//        manager.updateEpic((Epic) task, id);
-//    }
-//
-//    @Override
-//    void addTask(Task task) {
-//        manager.addEpic((Epic) task);
-//    }
-//
-//    @Override
-//    Response deleteTask(int id) {
-//        return manager.deleteEpic(id);
-//    }

@@ -17,7 +17,6 @@ public class Epic extends Task {
                 LocalDateTime endTime) {
         super(name, id, status);
         this.description = description;
-        //this.subtasks = new ArrayList<>();
         this.duration = duration;
         this.startTime = startTime;
         this.endTime = endTime;

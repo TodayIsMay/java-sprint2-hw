@@ -1,7 +1,5 @@
 package server;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managers.TaskManager;
@@ -11,7 +9,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 public class HistoryHandler implements HttpHandler {
-    TaskManager manager;
+    private TaskManager manager;
 
     public HistoryHandler(TaskManager manager) {
         this.manager = manager;
@@ -37,5 +35,13 @@ public class HistoryHandler implements HttpHandler {
         try (OutputStream os = exchange.getResponseBody()) {
             os.write(response.getBytes());
         }
+    }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TaskManager manager) {
+        this.manager = manager;
     }
 }

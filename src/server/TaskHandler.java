@@ -2,13 +2,10 @@ package server;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import managers.TaskManager;
-import tasks.Subtask;
 import tasks.Task;
-import tasks.Type;
 import utilities.DurationAdapter;
 import utilities.LocalDateTimeAdapter;
 import utilities.Response;
@@ -153,5 +150,21 @@ public class TaskHandler<T extends Task> implements HttpHandler{
 
     Response deleteTask(int id) {
         return manager.deleteTask(id);
+    }
+
+    public TaskManager getManager() {
+        return manager;
+    }
+
+    public void setManager(TaskManager manager) {
+        this.manager = manager;
+    }
+
+    public Class<T> getTClass() {
+        return tClass;
+    }
+
+    public void setTClass(Class<T> tClass) {
+        this.tClass = tClass;
     }
 }

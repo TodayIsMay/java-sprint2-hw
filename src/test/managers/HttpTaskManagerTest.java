@@ -31,7 +31,7 @@ class HttpTaskManagerTest{
     private Subtask subtask;
     private Subtask subtask1;
     private Task task;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
     @BeforeEach
     public void startServer() {
